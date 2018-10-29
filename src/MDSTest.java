@@ -1,15 +1,28 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * Implementation of Data Structures
  * Created by Ketki Mahajan on ${Date}
  **/
 public class MDSTest {
-    MDS m1 = new MDS();
+    MDS m1;
+
+    @BeforeEach
+    void makeObject() {
+        m1 = new MDS();
+    }
+
+    @Test
+    void find() {
+
+    }
+
 
     @Test
     void insert() {
@@ -25,6 +38,8 @@ public class MDSTest {
         x += m1.insert(3, new MDS.Money("532.79"), Arrays.asList(1233456L, 678912L));
         x += m1.insert(6, new MDS.Money(43, 23), Arrays.asList(200L, 4L));
         assertEquals(6, x);
+        assertEquals("32.79", m1.find(1).toString());
+        assertNotEquals(new MDS.Money("32.79"), m1.find(11));
 
     }
 

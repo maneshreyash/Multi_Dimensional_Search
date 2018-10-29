@@ -92,7 +92,7 @@ public class MDS {
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
-        return new Money();
+        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
     }
 
     static class Product implements Comparable<Product> {
