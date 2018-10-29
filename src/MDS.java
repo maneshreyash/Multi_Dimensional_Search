@@ -15,11 +15,13 @@ import java.util.TreeSet;
 public class MDS {
     // Add fields of MDS here
 
-    static HashMap<Long, TreeSet<Product>> table = new HashMap<>();
+    HashMap<Long, TreeSet<Product>> table = new HashMap<>();
     TreeMap<Long, Product> tree = new TreeMap<>();
 
     // Constructors
     public MDS() {
+        table = new HashMap<>();
+        tree = new TreeMap<>();
 
     }
 
@@ -36,8 +38,25 @@ public class MDS {
        Returns 1 if the item is new, and 0 otherwise.
     */
     public int insert(long id, Money price, java.util.List<Long> list) {
+        if (tree.containsKey(id)) {
+            System.out.println("Already Exists");
+            return 0;
+        } else {
+            Product newProduct = new Product(id, price, list);
+            tree.put(id, newProduct);
+            for (long d : list) {
+                TreeSet<Product> set = table.get(d);
+                if (set == null) {
+                    set = new TreeSet<>();
+                    set.add(newProduct);
+                    table.put(d, set);
+                } else {
+                    set.add(newProduct);
+                }
+            }
+            return 1;
+        }
 
-        return 0;
     }
    /* static void  mockProducts(){
          TreeSet<Product> ts = new TreeSet<>();
