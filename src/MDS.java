@@ -1,3 +1,8 @@
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 /**
  * Starter code for LP3
  *
@@ -10,8 +15,16 @@
 public class MDS {
     // Add fields of MDS here
 
+    static HashMap<Long, TreeSet<Product>> table = new HashMap<>();
+    TreeMap<Long, Product> tree = new TreeMap<>();
+
     // Constructors
     public MDS() {
+
+    }
+
+    public static void main(String[] args) {
+        //mockProducts();
     }
 
     /* Public methods of MDS. Do not change their signatures.
@@ -23,12 +36,66 @@ public class MDS {
        Returns 1 if the item is new, and 0 otherwise.
     */
     public int insert(long id, Money price, java.util.List<Long> list) {
+
         return 0;
     }
+   /* static void  mockProducts(){
+         TreeSet<Product> ts = new TreeSet<>();
+         TreeSet<Product> ts2 = new TreeSet<>();
+         TreeSet<Product> ts3 = new TreeSet<>();
+        Product p1 = new Product(1L,450);
+        Product p2 = new Product(2L,150);
+        Product p3 = new Product(3L,350);
+        Product p4 = new Product(4L,250);
+        Product p5 = new Product(5L,550);
+        Product p6 = new Product(6L,650);
+        Product p7 = new Product(7L,11550);
+        Product p8 = new Product(8L,1550);
+        Product p9 = new Product(9L,2550);
+
+        ts.add(p1);
+        ts.add(p2);
+        ts.add(p3);
+        ts2.add(p4);
+        ts2.add(p5);
+        ts2.add(p6);
+        ts3.add(p7);
+        ts3.add(p8);
+        ts3.add(p9);
+        table.put(1L,ts);
+        table.put(186L,ts2);
+        table.put(1921L,ts3);
+
+
+        System.out.println(ts);
+    }*/
 
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
+
         return new Money();
+    }
+
+    static class Product implements Comparable<Product> {
+        long id;
+        Money price;
+        List<Long> desc;
+
+        public Product(long id, Money price, java.util.List<Long> list) {
+            this.id = id;
+            this.price = price;
+            this.desc = list;
+        }
+
+        @Override
+        public int compareTo(Product o) {
+            if (this.price.compareTo(o.price) < 0)
+                return -1;
+            else if (this.price.compareTo(o.price) > 0) {
+                return 1;
+            } else
+                return 0;
+        }
     }
 
     /*
@@ -118,6 +185,7 @@ public class MDS {
         }
 
         public long dollars() {
+
             return d;
         }
 
@@ -126,10 +194,14 @@ public class MDS {
         }
 
         public int compareTo(Money other) { // Complete this, if needed
-            return 0;
+            long result1 = (this.dollars() * 100) + this.cents();
+            long result2 = (other.dollars() * 100) + other.cents();
+
+            return (int) (result1 - result2);
         }
 
         public String toString() {
+
             return d + "." + c;
         }
     }
