@@ -1,4 +1,4 @@
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -55,20 +55,15 @@ public class MDSTest {
 
     }
 
-    /*@Test
-    void findMaxPrice(){
-        MDS.Money price1 = m1.findMaxPrice(4);
-        MDS.Money price2 = m1.findMaxPrice(789);
-        assertEquals(new MDS.Money("232.99"), price1);
-        assertEquals(new MDS.Money("232.99"), price2);
-    }
+        long sum = m1.delete(1);
+        assertEquals(132, sum);
 
-    @Test
-    void findMinPrice(){
-        MDS.Money price1 = m1.findMinPrice(4);
-        MDS.Money price2 = m1.findMinPrice(789);
-        assertEquals(new MDS.Money("32.79"), price1);
-        assertEquals(new MDS.Money("132.59"), price2);
-    }*/
+        m1.insert(1, new MDS.Money("32.79"), Arrays.asList(123L, 4L, 5L));
+        long sum2 = m1.delete(1);
+        assertEquals(132, sum2);
+
+        long sum1 = m1.delete(10);
+        assertEquals(0, sum1);
+    }
 
 }
