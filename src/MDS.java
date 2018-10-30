@@ -94,7 +94,7 @@ public class MDS {
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
-        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
+        return tree.get(id) == null ? new Money() : tree.get(id).price;
     }
 
     static class Product implements Comparable<Product> {
@@ -181,7 +181,7 @@ public class MDS {
         if(table.containsKey(n)){
             return table.get(n).first().price;
         }else{
-            return new Money("0");
+            return new Money();
         }
     }
 
@@ -194,7 +194,7 @@ public class MDS {
         if (table.containsKey(n)) {
             return table.get(n).last().price;
         } else {
-            return new Money("0");
+            return new Money();
         }
 
 
@@ -229,7 +229,7 @@ public class MDS {
     public Money priceHike(long l, long h, double rate) {
         long low = tree.get(tree.ceilingKey(l)).id;
         long high = tree.get(tree.floorKey(h)).id;
-        Money sum = new Money("0");
+        Money sum = new Money();
         for(long i = low; i <= high; i++){
             Product p = tree.get(i);
             Money temp = p.price;
@@ -241,6 +241,10 @@ public class MDS {
         return sum;
     }
 
+    /*
+    * Used internally to add 2 Money prices.
+    *
+    * */
     private Money MoneyAdder(Money p1, Money p2){
         long a = (p1.dollars() * 100) + p1.cents();
         long b = (p2.dollars() * 100) + p2.cents();
@@ -248,6 +252,11 @@ public class MDS {
         return new Money(res/100, (int) res%100);
     }
 
+
+    /*
+    * Used internally to multiply the value of Money and
+    * rate to find what needs to be added to make updates in priceHike
+    * */
     private Money MoneyIntoFloat(Money p1, double r){
         long a = (p1.dollars() * 100) + p1.cents();
         double res = (a * (r / 100));
