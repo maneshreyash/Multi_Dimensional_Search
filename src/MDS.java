@@ -107,13 +107,28 @@ public class MDS {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Product product = (Product) o;
+
+            return id == product.id;
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) (id ^ (id >>> 32));
+        }
+
+        @Override
         public int compareTo(Product o) {
             if (this.price.compareTo(o.price) < 0)
                 return -1;
             else if (this.price.compareTo(o.price) > 0) {
                 return 1;
             } else
-                return 0;
+                return (int) (this.id - o.id); //Checks if the products are same on the basis of Id
         }
     }
 
