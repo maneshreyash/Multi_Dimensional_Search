@@ -42,6 +42,7 @@ public class MDS {
             System.out.println("Already Exists");
             return 0;
         } else {
+            //TODO Change the way description is set into the product, this will cause reference issues
             Product newProduct = new Product(id, price, list);
             tree.put(id, newProduct);
             for (long d : list) {
@@ -157,7 +158,13 @@ public class MDS {
        Return 0 if there is no such item.
     */
     public Money findMaxPrice(long n) {
-        return new Money();
+        if (table.containsKey(n)) {
+            return table.get(n).last().price;
+        } else {
+            return new Money("0");
+        }
+
+
     }
 
     /*
@@ -201,6 +208,11 @@ public class MDS {
         public Money(long d, int c) {
             this.d = d;
             this.c = c;
+        }
+
+        public Money(Money givenMoney) {
+            this.d = givenMoney.d;
+            this.c = givenMoney.c;
         }
 
         public Money(String s) {

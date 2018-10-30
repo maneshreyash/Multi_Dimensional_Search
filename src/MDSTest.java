@@ -43,4 +43,31 @@ public class MDSTest {
 
     }
 
+    @Test
+    void testMaxPrice() {
+        MDS testMaxPriceObject = new MDS();
+        testMaxPriceObject.insert(1, new MDS.Money("200"), Arrays.asList(100L, 205L));
+        testMaxPriceObject.insert(2, new MDS.Money("350"), Arrays.asList(405L, 105L));
+        testMaxPriceObject.insert(3, new MDS.Money("200"), Arrays.asList(105L, 205L));
+        testMaxPriceObject.insert(4, new MDS.Money("500"), Arrays.asList(405L, 500L));
+
+        assertEquals("350.0", testMaxPriceObject.findMaxPrice(105).toString());
+        assertNotEquals("250.0", testMaxPriceObject.findMaxPrice(105).toString());
+        assertEquals("500.0", testMaxPriceObject.findMaxPrice(500).toString());
+        assertNotEquals("505.0", testMaxPriceObject.findMaxPrice(500).toString());
+        assertEquals("500.0", testMaxPriceObject.findMaxPrice(405).toString());
+        assertNotEquals("305.0", testMaxPriceObject.findMaxPrice(405).toString());
+        assertEquals("200.0", testMaxPriceObject.findMaxPrice(100).toString());
+        assertNotEquals("100.0", testMaxPriceObject.findMaxPrice(100).toString());
+        assertEquals("200.0", testMaxPriceObject.findMaxPrice(205).toString());
+        assertNotEquals("100.0", testMaxPriceObject.findMaxPrice(205).toString());
+        assertNotEquals("100.0", testMaxPriceObject.findMaxPrice(150).toString());
+        assertEquals("0.0", testMaxPriceObject.findMaxPrice(150).toString());
+        testMaxPriceObject.insert(5, new MDS.Money("350"), Arrays.asList(1000L, 500L));
+        assertEquals("500.0", testMaxPriceObject.findMaxPrice(500).toString());
+        assertNotEquals("350.0", testMaxPriceObject.findMaxPrice(500).toString());
+
+
+    }
+
 }
