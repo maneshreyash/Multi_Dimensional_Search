@@ -27,6 +27,7 @@ public class MDS {
 
     public static void main(String[] args) {
         //mockProducts();
+        //System.out.println(findPrice);
     }
 
     /* Public methods of MDS. Do not change their signatures.
@@ -133,8 +134,15 @@ public class MDS {
                 return -1;
             else if (this.price.compareTo(o.price) > 0) {
                 return 1;
-            } else
-                return (int) (this.id - o.id); //Checks if the products are same on the basis of Id
+            } else {
+                if(this.id > o.id){
+                    return 1;
+                }else if(this.id < o.id){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }
         }
     }
 
@@ -198,7 +206,19 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
-        return 0;
+        Product lowlim = new Product(Long.MIN_VALUE, low);
+        Product highlim = new Product(Long.MAX_VALUE, high);
+
+        if(table.containsKey(n)){
+            TreeSet<Product> ranger = table.get(n);
+            if(high.compareTo(ranger.first().price) < 0 || low.compareTo(ranger.last().price) > 0){
+                return 0;
+            }
+            return ranger.subSet(ranger.ceiling(lowlim), true, ranger.floor(highlim), true).size();
+        }
+        else {
+            return 0;
+        }
     }
 
     /*

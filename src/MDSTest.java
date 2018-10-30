@@ -36,7 +36,7 @@ public class MDSTest {
 
         x += m1.insert(5, new MDS.Money("382.79"), Arrays.asList(1233456L, 678912L));
         x += m1.insert(3, new MDS.Money("532.79"), Arrays.asList(1233456L, 678912L));
-        x += m1.insert(6, new MDS.Money(43, 23), Arrays.asList(200L, 4L));
+        x += m1.insert(6, new MDS.Money("43.23"), Arrays.asList(200L, 4L));
         assertEquals(6, x);
         assertEquals("32.79", m1.find(1).toString());
         assertNotEquals(new MDS.Money("32.79"), m1.find(11));
@@ -66,9 +66,17 @@ public class MDSTest {
         assertEquals("0.0", price5.toString());
         assertEquals("0.0", price6.toString());
 
+        int fpr = m1.findPriceRange(4L, new MDS.Money("32.79"), new MDS.Money("232.99"));
+        assertEquals(3,fpr);
 
+        fpr = m1.findPriceRange(4L, new MDS.Money("32.79"), new MDS.Money("223.99"));
+        assertEquals(2,fpr);
 
+        fpr = m1.findPriceRange(789L, new MDS.Money("0"), new MDS.Money("1000"));
+        assertEquals(2,fpr);
 
+        fpr = m1.findPriceRange(789L, new MDS.Money("0"), new MDS.Money("12"));
+        assertEquals(0,fpr);
 
     }
 
