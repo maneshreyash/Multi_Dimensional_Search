@@ -133,12 +133,28 @@ public class MDS {
     }
 
     /*
-       c. Delete(id): delete item from storage.  Returns the sum of the
-       long ints that are in the description of the item deleted,
+       c. Delete(id): delete item from storage.
+       Returns the sum of the long ints that are in the description of the item deleted,
        or 0, if such an id did not exist.
     */
     public long delete(long id) {
-        return 0;
+        Product p = tree.remove(id);
+        long sum = 0;
+        if (p != null) {
+            for (long d : p.desc) {
+                sum += d;
+                TreeSet<Product> set = table.get(d);
+                if (set.size() > 1) {
+                    set.remove(p);
+                } else {
+                    table.remove(d);
+                }
+            }
+            return sum;
+        } else {
+            return 0;
+        }
+
     }
 
     /*

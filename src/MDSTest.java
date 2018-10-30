@@ -41,6 +41,15 @@ public class MDSTest {
         assertEquals("32.79", m1.find(1).toString());
         assertNotEquals(new MDS.Money("32.79"), m1.find(11));
 
+        long sum = m1.delete(1);
+        assertEquals(132, sum);
+
+        m1.insert(1, new MDS.Money("32.79"), Arrays.asList(123L, 4L, 5L));
+        long sum2 = m1.delete(1);
+        assertEquals(132, sum2);
+
+        long sum1 = m1.delete(10);
+        assertEquals(0, sum1);
     }
 
 }
