@@ -1,4 +1,4 @@
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * Created by Ketki Mahajan on ${Date}
  **/
 public class MDSTest {
-    MDS m1;
+    MDS m1 = new MDS();
 
-    @BeforeEach
+   /* @BeforeEach
     void makeObject() {
         m1 = new MDS();
-    }
+    }*/
 
     @Test
     void find() {
@@ -40,7 +40,35 @@ public class MDSTest {
         assertEquals(6, x);
         assertEquals("32.79", m1.find(1).toString());
         assertNotEquals(new MDS.Money("32.79"), m1.find(11));
+        MDS.Money price1 = m1.findMaxPrice(4);
+        MDS.Money price2 = m1.findMaxPrice(789);
+        assertEquals("232.99", price1.toString());
+        assertEquals("232.99", price2.toString());
+        MDS.Money price3 = m1.findMinPrice(4);
+        MDS.Money price4 = m1.findMinPrice(789);
+        assertEquals("32.79", price3.toString());
+        assertEquals("132.59", price4.toString());
+        MDS.Money price5 = m1.findMaxPrice(457);
+        MDS.Money price6 = m1.findMinPrice(654);
+        assertEquals("0.0", price5.toString());
+        assertEquals("0.0", price6.toString());
 
     }
+
+    /*@Test
+    void findMaxPrice(){
+        MDS.Money price1 = m1.findMaxPrice(4);
+        MDS.Money price2 = m1.findMaxPrice(789);
+        assertEquals(new MDS.Money("232.99"), price1);
+        assertEquals(new MDS.Money("232.99"), price2);
+    }
+
+    @Test
+    void findMinPrice(){
+        MDS.Money price1 = m1.findMinPrice(4);
+        MDS.Money price2 = m1.findMinPrice(789);
+        assertEquals(new MDS.Money("32.79"), price1);
+        assertEquals(new MDS.Money("132.59"), price2);
+    }*/
 
 }
