@@ -75,6 +75,10 @@ public class MDSTest {
         testMaxPriceObject.insert(5, new MDS.Money("350"), Arrays.asList(1000L, 500L));
         assertEquals("500.0", testMaxPriceObject.findMaxPrice(500).toString());
         assertNotEquals("350.0", testMaxPriceObject.findMaxPrice(500).toString());
+        testMaxPriceObject.delete(1);
+        assertEquals("0.0", testMaxPriceObject.findMaxPrice(100).toString());
+        testMaxPriceObject.delete(2);
+        assertEquals("200.0", testMaxPriceObject.findMaxPrice(105).toString());
 
 
     }
