@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Starter code for LP3
@@ -40,6 +43,7 @@ public class MDS {
             System.out.println("Already Exists");
             return 0;
         } else {
+            //TODO Change the way description is set into the product, this will cause reference issues
             Product newProduct = new Product(id, price, list);
             tree.put(id, newProduct);
             for (long d : list) {
@@ -187,11 +191,13 @@ public class MDS {
        Return 0 if there is no such item.
     */
     public Money findMaxPrice(long n) {
-        if(table.containsKey(n)){
+        if (table.containsKey(n)) {
             return table.get(n).last().price;
-        }else{
+        } else {
             return new Money("0");
         }
+
+
     }
 
     /*
