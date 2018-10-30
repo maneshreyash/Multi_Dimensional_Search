@@ -130,8 +130,15 @@ public class MDS {
                 return -1;
             else if (this.price.compareTo(o.price) > 0) {
                 return 1;
-            } else
-                return (int) (this.id - o.id); //Checks if the products are same on the basis of Id
+            } else {
+                if(this.id > o.id){
+                    return 1;
+                }else if(this.id < o.id){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }
         }
     }
 
@@ -193,13 +200,15 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
-        Product lowlim = new Product(Long.MAX_VALUE, low);
+        Product lowlim = new Product(Long.MIN_VALUE, low);
         Product highlim = new Product(Long.MAX_VALUE, high);
+
         if(table.containsKey(n)){
             TreeSet<Product> ranger = table.get(n);
-            Set<Product> answer =ranger.subSet(ranger.ceiling(lowlim), ranger.floor(highlim));
-            System.out.println(answer);
-            return ranger.subSet(ranger.ceiling(lowlim), ranger.floor(highlim)).size();
+            if(high.compareTo(ranger.first().price) < 0 || low.compareTo(ranger.last().price) > 0){
+                return 0;
+            }
+            return ranger.subSet(ranger.ceiling(lowlim), true, ranger.floor(highlim), true).size();
         }
         else {
             return 0;
