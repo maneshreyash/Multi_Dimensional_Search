@@ -227,7 +227,32 @@ public class MDS {
        prices of items.  Returns the sum of the net increases of the prices.
     */
     public Money priceHike(long l, long h, double rate) {
-        return new Money();
+        long low = tree.get(tree.ceilingKey(l)).id;
+        long high = tree.get(tree.floorKey(h)).id;
+        Money sum = new Money("0");
+        for(long i = low; i <= high; i++){
+            Product p = tree.get(i);
+            Money temp = p.price;
+            Money increase = MoneyIntoFloat(p.price, rate);
+            Money update = MoneyAdder(temp, increase);
+            sum = MoneyAdder(temp, increase);
+            this.insert(p.id, update, p.desc);
+        }
+        return sum;
+    }
+
+    private Money MoneyAdder(Money p1, Money p2){
+        long a = (p1.dollars() * 100) + p1.cents();
+        long b = (p2.dollars() * 100) + p2.cents();
+        long res = a + b;
+        return new Money(res/100, (int) res%100);
+    }
+
+    private Money MoneyIntoFloat(Money p1, double r){
+        long a = (p1.dollars() * 100) + p1.cents();
+        double res = (a * (r / 100));
+        long result = (long) res;
+        return new Money(result/100, (int) result%100);
     }
 
     /*
