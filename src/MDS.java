@@ -107,6 +107,11 @@ public class MDS {
             this.desc = list;
         }
 
+        public Product(long id, Money price) {
+            this.id = id;
+            this.price = price;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -165,7 +170,11 @@ public class MDS {
        Return 0 if there is no such item.
     */
     public Money findMinPrice(long n) {
-        return new Money();
+        if(table.containsKey(n)){
+            return table.get(n).first().price;
+        }else{
+            return new Money("0");
+        }
     }
 
     /*
@@ -224,11 +233,6 @@ public class MDS {
         public Money(long d, int c) {
             this.d = d;
             this.c = c;
-        }
-
-        public Money(Money givenMoney) {
-            this.d = givenMoney.d;
-            this.c = givenMoney.c;
         }
 
         public Money(String s) {
