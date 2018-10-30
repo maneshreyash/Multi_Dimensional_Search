@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Starter code for LP3
@@ -24,7 +27,6 @@ public class MDS {
 
     public static void main(String[] args) {
         //mockProducts();
-        //System.out.println(findPrice);
     }
 
     /* Public methods of MDS. Do not change their signatures.
@@ -40,6 +42,7 @@ public class MDS {
             System.out.println("Already Exists");
             return 0;
         } else {
+            //TODO Change the way description is set into the product, this will cause reference issues
             Product newProduct = new Product(id, price, list);
             tree.put(id, newProduct);
             for (long d : list) {
@@ -180,11 +183,13 @@ public class MDS {
        Return 0 if there is no such item.
     */
     public Money findMaxPrice(long n) {
-        if(table.containsKey(n)){
+        if (table.containsKey(n)) {
             return table.get(n).last().price;
-        }else{
+        } else {
             return new Money("0");
         }
+
+
     }
 
     /*
@@ -193,17 +198,7 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
-        Product lowlim = new Product(Long.MAX_VALUE, low);
-        Product highlim = new Product(Long.MAX_VALUE, high);
-        if(table.containsKey(n)){
-            TreeSet<Product> ranger = table.get(n);
-            Set<Product> answer =ranger.subSet(ranger.ceiling(lowlim), ranger.floor(highlim));
-            System.out.println(answer);
-            return ranger.subSet(ranger.ceiling(lowlim), ranger.floor(highlim)).size();
-        }
-        else {
-            return 0;
-        }
+        return 0;
     }
 
     /*
