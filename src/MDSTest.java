@@ -1,7 +1,7 @@
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -109,6 +109,27 @@ public class MDSTest {
         assertEquals("200.0", testMaxPriceObject.findMaxPrice(105).toString());
 
 
+    }
+
+    @Test
+    void removeNames() {
+        MDS testMaxPriceObject = new MDS();
+        testMaxPriceObject.insert(1, new MDS.Money("10"), new LinkedList<Long>(Arrays.asList(5L, 15L)));
+        testMaxPriceObject.insert(2, new MDS.Money("20"), new LinkedList<Long>(Arrays.asList(5L, 10L)));
+        testMaxPriceObject.insert(3, new MDS.Money("25"), new LinkedList<Long>(Arrays.asList(5L, 20L)));
+        testMaxPriceObject.insert(4, new MDS.Money("30"), new LinkedList<Long>(Arrays.asList(5L, 9L)));
+
+        long sum = testMaxPriceObject.removeNames(2, new LinkedList<Long>(Arrays.asList(5L, 10L, 78L)));
+        assertEquals(15, sum);
+
+
+        long sum1 = testMaxPriceObject.removeNames(1, new LinkedList<Long>(Arrays.asList(50L, 10L, 78L)));
+        assertEquals(0, sum1);
+
+        long sum2 = testMaxPriceObject.removeNames(3, new LinkedList<Long>(Arrays.asList(5L, 20L)));
+        assertEquals(25, sum2);
+
+        System.out.println(testMaxPriceObject.table.get(5L).size());
     }
 
 }
