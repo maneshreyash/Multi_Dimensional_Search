@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Starter code for LP3
@@ -137,6 +140,45 @@ public class MDS {
         }
     }
 
+
+    /* Public methods of MDS. Do not change their signatures.
+       __________________________________________________________________
+       a. Insert(id,price,list): insert a new item whose description is given
+       in the list.  If an entry with the same id already exists, then its
+       description and price are replaced by the new values, unless list
+       is null or empty, in which case, just the price is updated.
+       Returns 1 if the item is new, and 0 otherwise.
+    */
+    public int insert(long id, Money price, java.util.List<Long> list) {
+        if (tree.containsKey(id)) {
+            System.out.println("Already Exists");
+            return 0;
+        } else {
+            //TODO Change the way description is set into the product, this will cause reference issues
+            Product newProduct = new Product(id, price, list);
+            tree.put(id, newProduct);
+            for (long d : list) {
+                TreeSet<Product> set = table.get(d);
+                if (set == null) {
+                    set = new TreeSet<>();
+                    set.add(newProduct);
+                    table.put(d, set);
+                } else {
+                    set.add(newProduct);
+                }
+            }
+            return 1;
+        }
+
+    }
+
+    // b. Find(id): return price of item with given id (or 0, if not found).
+    public Money find(long id) {
+
+        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
+    }
+
+
     /*
        c. Delete(id): delete item from storage.
        Returns the sum of the long ints that are in the description of the item deleted,
@@ -223,12 +265,29 @@ public class MDS {
 
     /*
       h. RemoveNames(id, list): Remove elements of list from the description of id.
-      It is possible that some of the items in the list are not in the
-      id's description.  Return the sum of the numbers that are actually
-      deleted from the description of id.  Return 0 if there is no such id.
+      It is possible that some of the items in the list are not in the id's description.
+      Return the sum of the numbers that are actually deleted from the description of id.
+      Return 0 if there is no such id.
     */
     public long removeNames(long id, java.util.List<Long> list) {
-        return 0;
+        Product p = tree.get(id);
+        long sum = 0;
+
+
+        for (long i : list) {
+            if (p.desc.contains(i)) {
+                sum += i;
+                p.desc.remove(i);
+                TreeSet<Product> set = table.get(i);
+                if (set.size() > 1) {
+                    set.remove(p);
+                } else {
+                    table.remove(i);
+                }
+            }
+
+        }
+        return sum;
     }
 
     // Do not modify the Money class in a way that breaks LP3Driver.java
@@ -274,14 +333,7 @@ public class MDS {
             long result1 = (this.dollars() * 100) + this.cents();
             long result2 = (other.dollars() * 100) + other.cents();
 
-            if (result1 < result2) {
-                return -1;
-            } else if (result1 > result2) {
-                return 1;
-            } else {
-                return 0;
-            }
-
+            return (int) (result1 - result2);
         }
 
         public String toString() {
