@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Starter code for LP3
@@ -39,14 +36,28 @@ public class MDS {
        Returns 1 if the item is new, and 0 otherwise.
     */
     public int insert(long id, Money price, java.util.List<Long> list) {
+        List<Long> desc = new LinkedList<>();
+        desc.clear();
+        if (list != null) {
+            for (long listElement : list) {
+                desc.add(listElement);
+            }
+        }
+
         if (tree.containsKey(id)) {
-            System.out.println("Already Exists");
+            Product existingProduct = tree.get(id);
+            delete(id);
+            if (list == null || list.isEmpty()) {
+                insert(id, price, existingProduct.desc);
+            } else {
+                insert(id, price, desc);
+            }
+
             return 0;
         } else {
-            //TODO Change the way description is set into the product, this will cause reference issues
-            Product newProduct = new Product(id, price, list);
+            Product newProduct = new Product(id, price, desc);
             tree.put(id, newProduct);
-            for (long d : list) {
+            for (long d : desc) {
                 TreeSet<Product> set = table.get(d);
                 if (set == null) {
                     set = new TreeSet<>();
@@ -60,43 +71,24 @@ public class MDS {
         }
 
     }
-   /* static void  mockProducts(){
-         TreeSet<Product> ts = new TreeSet<>();
-         TreeSet<Product> ts2 = new TreeSet<>();
-         TreeSet<Product> ts3 = new TreeSet<>();
-        Product p1 = new Product(1L,450);
-        Product p2 = new Product(2L,150);
-        Product p3 = new Product(3L,350);
-        Product p4 = new Product(4L,250);
-        Product p5 = new Product(5L,550);
-        Product p6 = new Product(6L,650);
-        Product p7 = new Product(7L,11550);
-        Product p8 = new Product(8L,1550);
-        Product p9 = new Product(9L,2550);
-
-        ts.add(p1);
-        ts.add(p2);
-        ts.add(p3);
-        ts2.add(p4);
-        ts2.add(p5);
-        ts2.add(p6);
-        ts3.add(p7);
-        ts3.add(p8);
-        ts3.add(p9);
-        table.put(1L,ts);
-        table.put(186L,ts2);
-        table.put(1921L,ts3);
-
-
-        System.out.println(ts);
-    }*/
-
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
         return tree.get(id) == null ? new Money() : tree.get(id).price;
     }
 
+    /**
+     * A utility method which provides us with the bean of Product for a specific Id, useful in testing if the fields
+     * of the product class are as expected
+     *
+     * @param id of the product
+     * @return Product having that Id
+     */
+    Product getProductById(long id) {
+        return tree.get(id);
+    }
+
+    //Inner Class
     static class Product implements Comparable<Product> {
         long id;
         Money price;
@@ -145,6 +137,9 @@ public class MDS {
             }
         }
     }
+
+
+
 
     /*
        c. Delete(id): delete item from storage.
@@ -266,12 +261,29 @@ public class MDS {
 
     /*
       h. RemoveNames(id, list): Remove elements of list from the description of id.
-      It is possible that some of the items in the list are not in the
-      id's description.  Return the sum of the numbers that are actually
-      deleted from the description of id.  Return 0 if there is no such id.
+      It is possible that some of the items in the list are not in the id's description.
+      Return the sum of the numbers that are actually deleted from the description of id.
+      Return 0 if there is no such id.
     */
     public long removeNames(long id, java.util.List<Long> list) {
-        return 0;
+        Product p = tree.get(id);
+        long sum = 0;
+
+
+        for (long i : list) {
+            if (p.desc.contains(i)) {
+                sum += i;
+                p.desc.remove(i);
+                TreeSet<Product> set = table.get(i);
+                if (set.size() > 1) {
+                    set.remove(p);
+                } else {
+                    table.remove(i);
+                }
+            }
+
+        }
+        return sum;
     }
 
     // Do not modify the Money class in a way that breaks LP3Driver.java
