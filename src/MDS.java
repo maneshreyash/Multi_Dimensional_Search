@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Starter code for LP3
@@ -24,6 +21,74 @@ public class MDS {
         tree = new TreeMap<>();
 
     }
+
+    public static void main(String[] args) {
+        //mockProducts();
+        //System.out.println(findPrice);
+    }
+
+    /* Public methods of MDS. Do not change their signatures.
+       __________________________________________________________________
+       a. Insert(id,price,list): insert a new item whose description is given
+       in the list.  If an entry with the same id already exists, then its
+       description and price are replaced by the new values, unless list
+       is null or empty, in which case, just the price is updated.
+       Returns 1 if the item is new, and 0 otherwise.
+    */
+    public int insert(long id, Money price, java.util.List<Long> list) {
+        List<Long> desc = new LinkedList<>();
+        desc.clear();
+        if (list != null) {
+            for (long listElement : list) {
+                desc.add(listElement);
+            }
+        }
+
+        if (tree.containsKey(id)) {
+            Product existingProduct = tree.get(id);
+            delete(id);
+            if (list == null || list.isEmpty()) {
+                insert(id, price, existingProduct.desc);
+            } else {
+                insert(id, price, desc);
+            }
+
+            return 0;
+        } else {
+            Product newProduct = new Product(id, price, desc);
+            tree.put(id, newProduct);
+            for (long d : desc) {
+                TreeSet<Product> set = table.get(d);
+                if (set == null) {
+                    set = new TreeSet<>();
+                    set.add(newProduct);
+                    table.put(d, set);
+                } else {
+                    set.add(newProduct);
+                }
+            }
+            return 1;
+        }
+
+    }
+    // b. Find(id): return price of item with given id (or 0, if not found).
+    public Money find(long id) {
+
+        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
+    }
+
+    /**
+     * A utility method which provides us with the bean of Product for a specific Id, useful in testing if the fields
+     * of the product class are as expected
+     *
+     * @param id of the product
+     * @return Product having that Id
+     */
+    Product getProductById(long id) {
+        return tree.get(id);
+    }
+
+    //Inner Class
     static class Product implements Comparable<Product> {
         long id;
         Money price;
@@ -74,42 +139,6 @@ public class MDS {
     }
 
 
-    /* Public methods of MDS. Do not change their signatures.
-       __________________________________________________________________
-       a. Insert(id,price,list): insert a new item whose description is given
-       in the list.  If an entry with the same id already exists, then its
-       description and price are replaced by the new values, unless list
-       is null or empty, in which case, just the price is updated.
-       Returns 1 if the item is new, and 0 otherwise.
-    */
-    public int insert(long id, Money price, java.util.List<Long> list) {
-        if (tree.containsKey(id)) {
-            System.out.println("Already Exists");
-            return 0;
-        } else {
-            //TODO Change the way description is set into the product, this will cause reference issues
-            Product newProduct = new Product(id, price, list);
-            tree.put(id, newProduct);
-            for (long d : list) {
-                TreeSet<Product> set = table.get(d);
-                if (set == null) {
-                    set = new TreeSet<>();
-                    set.add(newProduct);
-                    table.put(d, set);
-                } else {
-                    set.add(newProduct);
-                }
-            }
-            return 1;
-        }
-
-    }
-
-    // b. Find(id): return price of item with given id (or 0, if not found).
-    public Money find(long id) {
-
-        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
-    }
 
 
     /*
@@ -193,7 +222,6 @@ public class MDS {
        prices of items.  Returns the sum of the net increases of the prices.
     */
     public Money priceHike(long l, long h, double rate) {
-
         return new Money();
     }
 
