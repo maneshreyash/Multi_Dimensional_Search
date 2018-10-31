@@ -5,29 +5,34 @@
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 public class LP3Driver {
-    public static void main(String[] args) throws Exception {
+    public static long main(String s) {
         Scanner in;
-        if (args.length > 0 && !args[0].equals("-")) {
+        /*if (args.length > 0 && !args[0].equals("-")) {
             File file = new File(args[0]);
             in = new Scanner(file);
         } else {
             in = new Scanner(System.in);
-        }
+        }*/
+        File file = new File(s);
+        try{
+            in = new Scanner(file);
+
         boolean VERBOSE = false;
-        if (args.length > 1) {
+        /*if (args.length > 1) {
             VERBOSE = Boolean.parseBoolean(args[1]);
-        }
+        }*/
 
         String operation = "";
         long lineno = 0;
 
         MDS mds = new MDS();
-        Timer timer = new Timer();
+        //Timer timer = new Timer();
         long id, result, total = 0;
         MDS.Money price;
         List<Long> name = new LinkedList<>();
@@ -99,11 +104,16 @@ public class LP3Driver {
                 System.out.println(lineno + "\t" + operation + "\t" + result + "\t" + total);
             }
         }
-        System.out.println(total);
-        System.out.println(timer.end());
+        return total;
+        }catch (FileNotFoundException e){
+
+        }
+        //System.out.println(total);
+        //System.out.println(timer.end());
+        return 0;
     }
 
-    public static class Timer {
+    /*public static class Timer {
         long startTime, endTime, elapsedTime, memAvailable, memUsed;
 
         public Timer() {
@@ -125,5 +135,5 @@ public class LP3Driver {
         public String toString() {
             return "Time: " + elapsedTime + " msec.\n" + "Memory: " + (memUsed / 1048576) + " MB / " + (memAvailable / 1048576) + " MB.";
         }
-    }
+    }*/
 }

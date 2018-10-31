@@ -203,6 +203,9 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
+        if(low.compareTo(high) > 0){
+            return 0;
+        }
         Product lowlim = new Product(Long.MIN_VALUE, low);
         Product highlim = new Product(Long.MAX_VALUE, high);
 
@@ -323,6 +326,12 @@ public class MDS {
             } else {
                 d = Long.parseLong(part[0]);
                 c = Integer.parseInt(part[1]);
+                /*int c1 = Integer.parseInt(part[1]);
+                if (c1 < 10) {
+                    c = c1 * 10;
+                } else {
+                    c = c1;
+                }*/
             }
         }
 
