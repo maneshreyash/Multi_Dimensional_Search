@@ -153,10 +153,12 @@ public class MDS {
             for (long d : p.desc) {
                 sum += d;
                 TreeSet<Product> set = table.get(d);
-                if (set.size() > 1) {
-                    set.remove(p);
-                } else {
-                    table.remove(d);
+                if (set != null) {
+                    if (set.size() > 1) {
+                        set.remove(p);
+                    } else {
+                        table.remove(d);
+                    }
                 }
             }
             return sum;
@@ -231,12 +233,15 @@ public class MDS {
         long high = tree.get(tree.floorKey(h)).id;
         Money sum = new Money();
         for(long i = low; i <= high; i++){
-            Product p = tree.get(i);
-            Money temp = p.price;
-            Money increase = MoneyIntoFloat(p.price, rate);
-            Money update = MoneyAdder(temp, increase);
-            sum = MoneyAdder(sum, increase);
-            this.insert(p.id, update, p.desc);
+            if (tree.containsKey(i)) {
+                Product p = tree.get(i);
+                Money temp = p.price;
+                Money increase = MoneyIntoFloat(p.price, rate);
+                Money update = MoneyAdder(temp, increase);
+                sum = MoneyAdder(sum, increase);
+                this.insert(p.id, update, p.desc);
+            }
+
         }
         return sum;
     }
@@ -331,10 +336,29 @@ public class MDS {
         }
 
         public int compareTo(Money other) { // Complete this, if needed
-            long result1 = (this.dollars() * 100) + this.cents();
-            long result2 = (other.dollars() * 100) + other.cents();
+            int cent1 = 0, cent2 = 0;
+            if (this.cents() < 10) {
+                cent1 = this.cents() * 10;
+            } else {
+                cent1 = this.cents();
+            }
 
-            return (int) (result1 - result2);
+            if (other.cents() < 10) {
+                cent2 = other.cents() * 10;
+            } else {
+                cent2 = other.cents();
+            }
+
+            long result1 = (this.dollars() * 100) + cent1;
+            long result2 = (other.dollars() * 100) + cent2;
+
+            if (result1 < result2) {
+                return -1;
+            } else if (result1 > result2) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
 
         public String toString() {
