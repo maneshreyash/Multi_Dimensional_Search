@@ -74,7 +74,7 @@ public class MDS {
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
-        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
+        return tree.get(id) == null ? new Money() : tree.get(id).price;
     }
 
     /**
@@ -176,7 +176,7 @@ public class MDS {
         if(table.containsKey(n)){
             return table.get(n).first().price;
         }else{
-            return new Money("0");
+            return new Money();
         }
     }
 
@@ -189,7 +189,7 @@ public class MDS {
         if (table.containsKey(n)) {
             return table.get(n).last().price;
         } else {
-            return new Money("0");
+            return new Money();
         }
 
 
@@ -206,6 +206,7 @@ public class MDS {
 
         if(table.containsKey(n)){
             TreeSet<Product> ranger = table.get(n);
+            //handled null pointers in case high is less than minimum or low is greater than maximum keys.
             if(high.compareTo(ranger.first().price) < 0 || low.compareTo(ranger.last().price) > 0){
                 return 0;
             }
@@ -222,7 +223,45 @@ public class MDS {
        prices of items.  Returns the sum of the net increases of the prices.
     */
     public Money priceHike(long l, long h, double rate) {
-        return new Money();
+        //handled null pointers in case high is less than minimum or low is greater than maximum keys.
+        if(tree.lastKey() < l || tree.firstKey() > h){
+            return new Money();
+        }
+        long low = tree.get(tree.ceilingKey(l)).id;
+        long high = tree.get(tree.floorKey(h)).id;
+        Money sum = new Money();
+        for(long i = low; i <= high; i++){
+            Product p = tree.get(i);
+            Money temp = p.price;
+            Money increase = MoneyIntoFloat(p.price, rate);
+            Money update = MoneyAdder(temp, increase);
+            sum = MoneyAdder(sum, increase);
+            this.insert(p.id, update, p.desc);
+        }
+        return sum;
+    }
+
+    /*
+    * Used internally to add 2 Money prices.
+    *
+    * */
+    private Money MoneyAdder(Money p1, Money p2){
+        long a = (p1.dollars() * 100) + p1.cents();
+        long b = (p2.dollars() * 100) + p2.cents();
+        long res = a + b;
+        return new Money(res/100, (int) res%100);
+    }
+
+
+    /*
+    * Used internally to multiply the value of Money and
+    * rate to find what needs to be added to make updates in priceHike
+    * */
+    private Money MoneyIntoFloat(Money p1, double r){
+        long a = (p1.dollars() * 100) + p1.cents();
+        double res = (a * (r / 100));
+        long result = (long) res;
+        return new Money(result/100, (int) result%100);
     }
 
     /*
