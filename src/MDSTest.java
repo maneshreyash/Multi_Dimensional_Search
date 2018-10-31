@@ -78,10 +78,10 @@ public class MDSTest {
         fpr = m1.findPriceRange(4L, new MDS.Money("32.79"), new MDS.Money("223.99"));
         assertEquals(2,fpr);
 
-        fpr = m1.findPriceRange(789L, new MDS.Money("0"), new MDS.Money("1000"));
+        fpr = m1.findPriceRange(789L, new MDS.Money(), new MDS.Money("232.99"));
         //TODO @Shreyash this test case is not working after adding the add for duplicates
-//        assertEquals(2,fpr);
-
+        assertEquals(1,fpr);
+        //tested in case high is less than minimum or low is greater than maximum keys.
         fpr = m1.findPriceRange(789L, new MDS.Money("0"), new MDS.Money("12"));
         assertEquals(0,fpr);
 
@@ -157,6 +157,27 @@ public class MDSTest {
 
         long sum2 = testMaxPriceObject.removeNames(3, new LinkedList<Long>(Arrays.asList(5L, 20L)));
         assertEquals(25, sum2);
+
+    }
+
+
+    @Test
+    void priceHike(){
+        MDS ph = new MDS();
+        ph.insert(1, new MDS.Money(100, 0), Arrays.asList(123L, 4L, 5L));
+        ph.insert(2, new MDS.Money(200, 0), Arrays.asList(4L, 789L, 25L));
+        ph.insert(3, new MDS.Money(300, 0), Arrays.asList(123L, 789L, 254L));
+        ph.insert(4, new MDS.Money(400, 0), Arrays.asList(1L, 4L, 15L));
+        ph.insert(5, new MDS.Money(500, 0), Arrays.asList(173L, 180L, 195L));
+
+        assertEquals(new MDS.Money(150,0).toString(), ph.priceHike(0, 6, 10.00).toString());
+        assertEquals(new MDS.Money(128,20).toString(), ph.priceHike(2, 4, 12.95).toString()); // checked if the fractional pennies were discarded properly.
+        //tested in case high is less than minimum or low is greater than maximum keys.
+        assertEquals(new MDS.Money().toString(), ph.priceHike(6, 8, 10.00).toString());
+        assertEquals(new MDS.Money().toString(), ph.priceHike(0, 0, 10.00).toString());
+        assertEquals(new MDS.Money().toString(), ph.priceHike(9, 0, 10.00).toString());
+        assertEquals(new MDS.Money(3, 58).toString(), ph.priceHike(0, 2, 1.00).toString());
+        assertEquals(new MDS.Money(52, 34).toString(), ph.priceHike(4, 8, 5.00).toString());
 
     }
 

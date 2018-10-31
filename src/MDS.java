@@ -206,6 +206,7 @@ public class MDS {
 
         if(table.containsKey(n)){
             TreeSet<Product> ranger = table.get(n);
+            //handled null pointers in case high is less than minimum or low is greater than maximum keys.
             if(high.compareTo(ranger.first().price) < 0 || low.compareTo(ranger.last().price) > 0){
                 return 0;
             }
@@ -222,6 +223,10 @@ public class MDS {
        prices of items.  Returns the sum of the net increases of the prices.
     */
     public Money priceHike(long l, long h, double rate) {
+        //handled null pointers in case high is less than minimum or low is greater than maximum keys.
+        if(tree.lastKey() < l || tree.firstKey() > h){
+            return new Money();
+        }
         long low = tree.get(tree.ceilingKey(l)).id;
         long high = tree.get(tree.floorKey(h)).id;
         Money sum = new Money();
@@ -230,7 +235,7 @@ public class MDS {
             Money temp = p.price;
             Money increase = MoneyIntoFloat(p.price, rate);
             Money update = MoneyAdder(temp, increase);
-            sum = MoneyAdder(temp, increase);
+            sum = MoneyAdder(sum, increase);
             this.insert(p.id, update, p.desc);
         }
         return sum;
