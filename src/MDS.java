@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Starter code for LP3
@@ -91,6 +88,7 @@ public class MDS {
         return tree.get(id);
     }
 
+    //Inner Class
     static class Product implements Comparable<Product> {
         long id;
         Money price;
@@ -141,42 +139,6 @@ public class MDS {
     }
 
 
-    /* Public methods of MDS. Do not change their signatures.
-       __________________________________________________________________
-       a. Insert(id,price,list): insert a new item whose description is given
-       in the list.  If an entry with the same id already exists, then its
-       description and price are replaced by the new values, unless list
-       is null or empty, in which case, just the price is updated.
-       Returns 1 if the item is new, and 0 otherwise.
-    */
-    public int insert(long id, Money price, java.util.List<Long> list) {
-        if (tree.containsKey(id)) {
-            System.out.println("Already Exists");
-            return 0;
-        } else {
-            //TODO Change the way description is set into the product, this will cause reference issues
-            Product newProduct = new Product(id, price, list);
-            tree.put(id, newProduct);
-            for (long d : list) {
-                TreeSet<Product> set = table.get(d);
-                if (set == null) {
-                    set = new TreeSet<>();
-                    set.add(newProduct);
-                    table.put(d, set);
-                } else {
-                    set.add(newProduct);
-                }
-            }
-            return 1;
-        }
-
-    }
-
-    // b. Find(id): return price of item with given id (or 0, if not found).
-    public Money find(long id) {
-
-        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
-    }
 
 
     /*

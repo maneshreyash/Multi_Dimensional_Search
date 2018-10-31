@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -55,7 +56,6 @@ public class MDSTest {
 
         //long sum1 = m1.delete(10);
         //assertEquals(0, sum1);
-
 
 
         MDS.Money price1 = m1.findMaxPrice(4);
@@ -158,7 +158,6 @@ public class MDSTest {
         long sum2 = testMaxPriceObject.removeNames(3, new LinkedList<Long>(Arrays.asList(5L, 20L)));
         assertEquals(25, sum2);
 
-        System.out.println(testMaxPriceObject.table.get(5L).size());
     }
 
 }
