@@ -268,10 +268,11 @@ public class MDS {
     *
     * */
     private Money MoneyAdder(Money p1, Money p2){
-        long a = (p1.dollars() * 100) + p1.cents();
+        /*long a = (p1.dollars() * 100) + p1.cents();
         long b = (p2.dollars() * 100) + p2.cents();
-        long res = a + b;
-        return new Money(res/100, (int) res%100);
+        long res = a + b;*/
+        //return new Money(res/100, (int) res%100);
+        return new Money((p1.dollars() + p2.dollars()), (p1.cents() + p2.cents()));
     }
 
 
