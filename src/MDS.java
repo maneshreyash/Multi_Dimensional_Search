@@ -43,6 +43,15 @@ public class MDS {
                 desc.add(listElement);
             }
         }
+        /*if (tree.containsKey(id)) {
+            if (list == null || list.isEmpty()) {
+                tree.get(id).price= price;
+            } else {
+                tree.get(id).price = price;
+                tree.get(id).desc = desc;
+            }
+            return 0;
+        }*/
 
         if (tree.containsKey(id)) {
             Product existingProduct = tree.get(id);
@@ -52,7 +61,6 @@ public class MDS {
             } else {
                 insert(id, price, desc);
             }
-
             return 0;
         } else {
             Product newProduct = new Product(id, price, desc);
@@ -74,7 +82,7 @@ public class MDS {
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
-        return tree.get(id) == null ? new Money() : tree.get(id).price;
+        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
     }
 
     /**
@@ -85,6 +93,7 @@ public class MDS {
      * @return Product having that Id
      */
     Product getProductById(long id) {
+
         return tree.get(id);
     }
 
@@ -215,6 +224,10 @@ public class MDS {
             if(high.compareTo(ranger.first().price) < 0 || low.compareTo(ranger.last().price) > 0){
                 return 0;
             }
+            if (ranger.ceiling(lowlim).compareTo(ranger.floor(highlim)) > 0) {
+                return 0;
+            }
+
             return ranger.subSet(ranger.ceiling(lowlim), true, ranger.floor(highlim), true).size();
         }
         else {
@@ -234,6 +247,7 @@ public class MDS {
         }
         long low = tree.get(tree.ceilingKey(l)).id;
         long high = tree.get(tree.floorKey(h)).id;
+
         Money sum = new Money();
         for(long i = low; i <= high; i++){
             if (tree.containsKey(i)) {
@@ -345,28 +359,19 @@ public class MDS {
         }
 
         public int compareTo(Money other) { // Complete this, if needed
-            int cent1 = 0, cent2 = 0;
-            if (this.cents() < 10) {
-                cent1 = this.cents() * 10;
-            } else {
-                cent1 = this.cents();
-            }
 
-            if (other.cents() < 10) {
-                cent2 = other.cents() * 10;
-            } else {
-                cent2 = other.cents();
-            }
-
-            long result1 = (this.dollars() * 100) + cent1;
-            long result2 = (other.dollars() * 100) + cent2;
-
-            if (result1 < result2) {
+            if (this.d < other.d) {
                 return -1;
-            } else if (result1 > result2) {
+            } else if (this.d > other.d) {
                 return 1;
             } else {
-                return 0;
+                if (this.c < other.c) {
+                    return -1;
+                } else if (this.c > other.c) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
         }
 
