@@ -126,22 +126,26 @@ public class MDS {
        or 0, if such an id did not exist.
     */
     public long delete(long id) {
+
         Product p = tree.remove(id);
         long sum = 0;
         if (p != null) {
-            for (long d : p.desc) {
+            for (long d : p.desc)
+            {
                 sum += d;
                 HashSet<Long> set = table.get(d);
                 if (set != null) {
                     if (set.size() > 1) {
                         set.remove(id);
                     } else {
+                        set.remove(id);
                         table.remove(d);
                     }
                 }
             }
             return sum;
-        } else {
+        }
+        else {
             return 0;
         }
 
@@ -200,6 +204,12 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
+
+        if(low.compareTo(high) > 0)
+        {
+            return 0;
+        }
+
         if(table.containsKey(n)){
             HashSet<Long> range = table.get(n);
             int count = 0;
@@ -276,23 +286,31 @@ public class MDS {
       Return 0 if there is no such id.
     */
     public long removeNames(long id, java.util.List<Long> list) {
-        Product p = tree.get(id);
-        long sum = 0;
 
+         long sum = 0;
+         Product p = tree.get(id);
 
-        for (long i : list) {
-            if (p.desc.contains(i)) {
-                sum += i;
-                p.desc.remove(i);
-                HashSet<Long> set = table.get(i);
-                if (set.size() > 1) {
-                    set.remove(id);
-                } else {
-                    table.remove(i);
+         if (p != null) {
+             for (long i : list)
+             {
+                if (p.desc.contains(i))
+                {
+                    sum += i;
+                    p.desc.remove(i);
+                    HashSet<Long> set = table.get(i);
+                    if (set != null)
+                    {
+                        if (set.size() > 1) {
+                            set.remove(id);
+                        } else {
+                            set.remove(id);
+                            table.remove(i);
+                        }
+                    }
                 }
-            }
-
+             }
         }
+
         return sum;
     }
 
