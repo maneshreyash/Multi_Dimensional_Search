@@ -50,12 +50,12 @@ class LP3DriverTest {
     }
 
 
-/*@Test
+@Test
     void main100k() {
         assertEquals(565883014879L, LP3Driver.main("C:\\Users\\manes\\IdeaProjects\\LP3New\\lp3-big-100k.txt"));
     }
 
-
+/*
 
 @Test
     void main200k() {

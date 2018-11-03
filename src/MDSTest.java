@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
  **/
 public class MDSTest {
     MDS m1 = new MDS();
-    //MDS m2;
+    MDS m2;
 
-    /*@BeforeEach
+    @BeforeEach
     void makeObject() {
         m2 = new MDS();
         m2.insert(1, new MDS.Money("200"), Arrays.asList(100L, 205L));
@@ -22,12 +22,12 @@ public class MDSTest {
         m2.insert(3, new MDS.Money("200"), Arrays.asList(105L, 205L));
         m2.insert(4, new MDS.Money("500"), Arrays.asList(405L, 500L));
 
-    }*/
+    }
 
-   /* @Test
+    @Test
     void find() {
 
-    }*/
+    }
 
 
     @Test
@@ -71,7 +71,7 @@ public class MDSTest {
         MDS.Money price6 = m1.findMinPrice(654);
         assertEquals("0.0", price5.toString());
         assertEquals("0.0", price6.toString());
-        /*
+
         int fpr = m1.findPriceRange(4L, new MDS.Money("32.79"), new MDS.Money("232.99"));
         assertEquals(3,fpr);
 
@@ -84,10 +84,10 @@ public class MDSTest {
         //tested in case high is less than minimum or low is greater than maximum keys.
         fpr = m1.findPriceRange(789L, new MDS.Money("0"), new MDS.Money("12"));
         assertEquals(0,fpr);
-*/
+
     }
 
-   /* @Test
+    @Test
     void testMaxPrice() {
         assertEquals("350.0", m2.findMaxPrice(105).toString());
         assertNotEquals("250.0", m2.findMaxPrice(105).toString());
@@ -179,6 +179,6 @@ public class MDSTest {
         assertEquals(new MDS.Money(3, 58).toString(), ph.priceHike(0, 2, 1.00).toString());
         assertEquals(new MDS.Money(52, 34).toString(), ph.priceHike(4, 8, 5.00).toString());
 
-    }*/
+    }
 
 }

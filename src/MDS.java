@@ -28,17 +28,6 @@ public class MDS {
         Money price;
         List<Long> desc;
 
-        /*public Product(long id, Money price, java.util.List<Long> list) {
-            this.id = id;
-            this.price = price;
-            this.desc = list;
-        }
-
-        public Product(long id, Money price) {
-            this.id = id;
-            this.price = price;
-        }*/
-
         public Product(Money price, java.util.List<Long> list) {
             this.price = price;
             this.desc = list;
@@ -190,7 +179,7 @@ public class MDS {
         if (table.containsKey(n)) {
             HashSet<Long> max = table.get(n);
             Money maxi = new Money();
-            Money temp = new Money();
+            Money temp;
             for(Long id: max){
                 temp = find(id);
                 if(find(id).compareTo(maxi) > 0){
@@ -214,7 +203,7 @@ public class MDS {
         if(table.containsKey(n)){
             HashSet<Long> range = table.get(n);
             int count = 0;
-            Money temp;// = new Money();
+            Money temp;
             for(Long id: range){
                 temp = find(id);
                 if(temp.compareTo(low) >= 0 && temp.compareTo(high) <= 0){
@@ -251,7 +240,6 @@ public class MDS {
                     Money update = MoneyAdder(temp, increase);
                     sum = MoneyAdder(sum, increase);
                     tree.put(i, new Product(update, p.desc));
-                    //this.insert(p.id, update, p.desc);
                 }
             }
         }
@@ -267,7 +255,6 @@ public class MDS {
         long b = (p2.dollars() * 100) + p2.cents();
         long res = a + b;
         return new Money(res/100, (int) (res%100));
-        //return new Money((p1.dollars() + p2.dollars()), (p1.cents() + p2.cents()));
     }
 
 
@@ -279,7 +266,7 @@ public class MDS {
         long a = (p1.dollars() * 100) + p1.cents();
         double res = (a * (r / 100));
         long result = (long) res;
-        return new Money(result/100, (int) result%100);
+        return new Money(result/100, (int) (result%100));
     }
 
     /*
@@ -299,7 +286,7 @@ public class MDS {
                 p.desc.remove(i);
                 HashSet<Long> set = table.get(i);
                 if (set.size() > 1) {
-                    set.remove(p);
+                    set.remove(id);
                 } else {
                     table.remove(i);
                 }
