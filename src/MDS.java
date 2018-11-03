@@ -212,9 +212,6 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
-        if(low.compareTo(high) > 0){
-            return 0;
-        }
         Product lowlim = new Product(Long.MIN_VALUE, low);
         Product highlim = new Product(Long.MAX_VALUE, high);
 
@@ -258,28 +255,27 @@ public class MDS {
                 sum = MoneyAdder(sum, increase);
                 this.insert(p.id, update, p.desc);
             }
-
         }
         return sum;
     }
 
     /*
-    * Used internally to add 2 Money prices.
-    *
-    * */
+     * Used internally to add 2 Money prices.
+     *
+     * */
     private Money MoneyAdder(Money p1, Money p2){
-        /*long a = (p1.dollars() * 100) + p1.cents();
+        long a = (p1.dollars() * 100) + p1.cents();
         long b = (p2.dollars() * 100) + p2.cents();
-        long res = a + b;*/
-        //return new Money(res/100, (int) res%100);
-        return new Money((p1.dollars() + p2.dollars()), (p1.cents() + p2.cents()));
+        long res = a + b;
+        return new Money(res/100, (int) (res%100));
+        //return new Money((p1.dollars() + p2.dollars()), (p1.cents() + p2.cents()));
     }
 
 
     /*
-    * Used internally to multiply the value of Money and
-    * rate to find what needs to be added to make updates in priceHike
-    * */
+     * Used internally to multiply the value of Money and
+     * rate to find what needs to be added to make updates in priceHike
+     * */
     private Money MoneyIntoFloat(Money p1, double r){
         long a = (p1.dollars() * 100) + p1.cents();
         double res = (a * (r / 100));
@@ -341,12 +337,6 @@ public class MDS {
             } else {
                 d = Long.parseLong(part[0]);
                 c = Integer.parseInt(part[1]);
-                /*int c1 = Integer.parseInt(part[1]);
-                if (c1 < 10) {
-                    c = c1 * 10;
-                } else {
-                    c = c1;
-                }*/
             }
         }
 

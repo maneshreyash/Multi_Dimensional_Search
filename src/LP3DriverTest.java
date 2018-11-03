@@ -36,12 +36,22 @@ class LP3DriverTest {
 
     @Test
     void main407() {
-        assertEquals(489042, LP3Driver.main("C:\\Users\\manes\\IdeaProjects\\LP3New\\407.txt"));
+        assertEquals(489174, LP3Driver.main("C:\\Users\\manes\\IdeaProjects\\LP3New\\407.txt"));
     }
 
     @Test
     void main420() {
         assertEquals(1016105100, LP3Driver.main("C:\\Users\\manes\\IdeaProjects\\LP3New\\420.txt"));
     }
+
+    /*@Test
+    void main100k() {
+        assertEquals(565883014879L, LP3Driver.main("C:\\Users\\manes\\IdeaProjects\\LP3New\\lp3-big-100k.txt"));
+    }*/
+
+    /*@Test
+    void main200k() {
+        assertEquals(1016105100, LP3Driver.main("C:\\Users\\manes\\IdeaProjects\\LP3New\\lp3-big-200k.txt"));
+    }*/
 
 }
