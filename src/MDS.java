@@ -12,98 +12,23 @@ import java.util.*;
 public class MDS {
     // Add fields of MDS here
 
-    HashMap<Long, TreeSet<Product>> table = new HashMap<>();
-    TreeMap<Long, Product> tree = new TreeMap<>();
+    HashMap<Long, HashSet<Long>> table;
+    TreeMap<Long, Product> tree;
+
 
     // Constructors
     public MDS() {
         table = new HashMap<>();
         tree = new TreeMap<>();
-
-    }
-
-    public static void main(String[] args) {
-        //mockProducts();
-        //System.out.println(findPrice);
-    }
-
-    /* Public methods of MDS. Do not change their signatures.
-       __________________________________________________________________
-       a. Insert(id,price,list): insert a new item whose description is given
-       in the list.  If an entry with the same id already exists, then its
-       description and price are replaced by the new values, unless list
-       is null or empty, in which case, just the price is updated.
-       Returns 1 if the item is new, and 0 otherwise.
-    */
-    public int insert(long id, Money price, java.util.List<Long> list) {
-        List<Long> desc = new LinkedList<>();
-        desc.clear();
-        if (list != null) {
-            for (long listElement : list) {
-                desc.add(listElement);
-            }
-        }
-        /*if (tree.containsKey(id)) {
-            if (list == null || list.isEmpty()) {
-                tree.get(id).price= price;
-            } else {
-                tree.get(id).price = price;
-                tree.get(id).desc = desc;
-            }
-            return 0;
-        }*/
-
-        if (tree.containsKey(id)) {
-            Product existingProduct = tree.get(id);
-            delete(id);
-            if (list == null || list.isEmpty()) {
-                insert(id, price, existingProduct.desc);
-            } else {
-                insert(id, price, desc);
-            }
-            return 0;
-        } else {
-            Product newProduct = new Product(id, price, desc);
-            tree.put(id, newProduct);
-            for (long d : desc) {
-                TreeSet<Product> set = table.get(d);
-                if (set == null) {
-                    set = new TreeSet<>();
-                    set.add(newProduct);
-                    table.put(d, set);
-                } else {
-                    set.add(newProduct);
-                }
-            }
-            return 1;
-        }
-
-    }
-    // b. Find(id): return price of item with given id (or 0, if not found).
-    public Money find(long id) {
-
-        return tree.get(id) == null ? new Money("0") : tree.get(id).price;
-    }
-
-    /**
-     * A utility method which provides us with the bean of Product for a specific Id, useful in testing if the fields
-     * of the product class are as expected
-     *
-     * @param id of the product
-     * @return Product having that Id
-     */
-    Product getProductById(long id) {
-
-        return tree.get(id);
     }
 
     //Inner Class
-    static class Product implements Comparable<Product> {
+    static class Product{
         long id;
         Money price;
         List<Long> desc;
 
-        public Product(long id, Money price, java.util.List<Long> list) {
+        /*public Product(long id, Money price, java.util.List<Long> list) {
             this.id = id;
             this.price = price;
             this.desc = list;
@@ -112,6 +37,11 @@ public class MDS {
         public Product(long id, Money price) {
             this.id = id;
             this.price = price;
+        }*/
+
+        public Product(Money price, java.util.List<Long> list) {
+            this.price = price;
+            this.desc = list;
         }
 
         @Override
@@ -128,26 +58,77 @@ public class MDS {
         public int hashCode() {
             return (int) (id ^ (id >>> 32));
         }
-
-        @Override
-        public int compareTo(Product o) {
-            if (this.price.compareTo(o.price) < 0)
-                return -1;
-            else if (this.price.compareTo(o.price) > 0) {
-                return 1;
-            } else {
-                if(this.id > o.id){
-                    return 1;
-                }else if(this.id < o.id){
-                    return -1;
-                }else{
-                    return 0;
-                }
-            }
-        }
     }
 
 
+
+
+   /* public static void main(String[] args) {
+        mockProducts();
+        System.out.println(findPrice);
+    }*/
+
+    /* Public methods of MDS. Do not change their signatures.
+       __________________________________________________________________
+       a. Insert(id,price,list): insert a new item whose description is given
+       in the list.  If an entry with the same id already exists, then its
+       description and price are replaced by the new values, unless list
+       is null or empty, in which case, just the price is updated.
+       Returns 1 if the item is new, and 0 otherwise.
+    */
+    public int insert(long id, Money price, java.util.List<Long> list) {
+        List<Long> desc = new LinkedList<>();
+        desc.clear();
+        if (list != null) {
+            desc.addAll(list);
+        }
+        if (tree.containsKey(id)) {
+            Product existingProduct = tree.get(id);
+            delete(id);
+            if (list == null || list.isEmpty()) {
+                insert(id, price, existingProduct.desc);
+            } else {
+                insert(id, price, desc);
+            }
+            return 0;
+        } else {
+            Product newProduct = new Product(price, desc);
+            tree.put(id, newProduct);
+            for (long d : desc) {
+                HashSet<Long> set = table.get(d);
+                if (set == null) {
+                    set = new HashSet<>();
+                    set.add(id);
+                    table.put(d, set);
+                } else {
+                    set.add(id);
+                }
+            }
+
+            return 1;
+        }
+
+    }
+    // b. Find(id): return price of item with given id (or 0, if not found).
+    public Money find(long id) {
+        if(tree.containsKey(id)){
+            return tree.get(id).price;
+        }else{
+            return new Money();
+        }
+    }
+
+    /**
+     * A utility method which provides us with the bean of Product for a specific Id, useful in testing if the fields
+     * of the product class are as expected
+     *
+     * @param id of the product
+     * @return Product having that Id
+     */
+    Product getProductById(long id) {
+
+        return tree.get(id);
+    }
 
 
     /*
@@ -161,10 +142,10 @@ public class MDS {
         if (p != null) {
             for (long d : p.desc) {
                 sum += d;
-                TreeSet<Product> set = table.get(d);
+                HashSet<Long> set = table.get(d);
                 if (set != null) {
                     if (set.size() > 1) {
-                        set.remove(p);
+                        set.remove(id);
                     } else {
                         table.remove(d);
                     }
@@ -185,20 +166,38 @@ public class MDS {
     */
     public Money findMinPrice(long n) {
         if(table.containsKey(n)){
-            return table.get(n).first().price;
+            HashSet<Long> min = table.get(n);
+            Money mini = new Money(Long.MAX_VALUE, 0);
+            Money temp;
+            for(Long id: min){
+                temp = find(id);
+                if(find(id).compareTo(mini) < 0){
+                    mini = temp;
+                }
+            }
+            return mini;
         }else{
             return new Money();
         }
     }
 
-    /*
-       e. FindMaxPrice(n): given a long int, find items whose description
+
+       /*e. FindMaxPrice(n): given a long int, find items whose description
        contains that number, and return highest price of those items.
-       Return 0 if there is no such item.
-    */
+       Return 0 if there is no such item.*/
+
     public Money findMaxPrice(long n) {
         if (table.containsKey(n)) {
-            return table.get(n).last().price;
+            HashSet<Long> max = table.get(n);
+            Money maxi = new Money();
+            Money temp = new Money();
+            for(Long id: max){
+                temp = find(id);
+                if(find(id).compareTo(maxi) > 0){
+                    maxi = temp;
+                }
+            }
+            return maxi;
         } else {
             return new Money();
         }
@@ -212,20 +211,17 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
-        Product lowlim = new Product(Long.MIN_VALUE, low);
-        Product highlim = new Product(Long.MAX_VALUE, high);
-
         if(table.containsKey(n)){
-            TreeSet<Product> ranger = table.get(n);
-            //handled null pointers in case high is less than minimum or low is greater than maximum keys.
-            if(high.compareTo(ranger.first().price) < 0 || low.compareTo(ranger.last().price) > 0){
-                return 0;
+            HashSet<Long> range = table.get(n);
+            int count = 0;
+            Money temp;// = new Money();
+            for(Long id: range){
+                temp = find(id);
+                if(temp.compareTo(low) >= 0 && temp.compareTo(high) <= 0){
+                    count++;
+                }
             }
-            if (ranger.ceiling(lowlim).compareTo(ranger.floor(highlim)) > 0) {
-                return 0;
-            }
-
-            return ranger.subSet(ranger.ceiling(lowlim), true, ranger.floor(highlim), true).size();
+            return count;
         }
         else {
             return 0;
@@ -242,18 +238,21 @@ public class MDS {
         if(tree.lastKey() < l || tree.firstKey() > h){
             return new Money();
         }
-        long low = tree.get(tree.ceilingKey(l)).id;
-        long high = tree.get(tree.floorKey(h)).id;
+        long low = tree.ceilingKey(l);
+        long high = tree.floorKey(h);
 
         Money sum = new Money();
-        for(long i = low; i <= high; i++){
-            if (tree.containsKey(i)) {
-                Product p = tree.get(i);
-                Money temp = p.price;
-                Money increase = MoneyIntoFloat(p.price, rate);
-                Money update = MoneyAdder(temp, increase);
-                sum = MoneyAdder(sum, increase);
-                this.insert(p.id, update, p.desc);
+        for(long i: tree.keySet()){
+            if(i <= high && i >= low) {
+                if (tree.containsKey(i)) {
+                    Product p = tree.get(i);
+                    Money temp = p.price;
+                    Money increase = MoneyIntoFloat(p.price, rate);
+                    Money update = MoneyAdder(temp, increase);
+                    sum = MoneyAdder(sum, increase);
+                    tree.put(i, new Product(update, p.desc));
+                    //this.insert(p.id, update, p.desc);
+                }
             }
         }
         return sum;
@@ -298,7 +297,7 @@ public class MDS {
             if (p.desc.contains(i)) {
                 sum += i;
                 p.desc.remove(i);
-                TreeSet<Product> set = table.get(i);
+                HashSet<Long> set = table.get(i);
                 if (set.size() > 1) {
                     set.remove(p);
                 } else {
