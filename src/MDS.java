@@ -69,7 +69,14 @@ public class MDS {
         List<Long> desc = new LinkedList<>();
         desc.clear();
         if (list != null) {
-            desc.addAll(list);
+            for (long listElement : list) {
+                if(!desc.contains(listElement))
+                {
+                    desc.add(listElement);
+                }
+            }
+
+            //desc.addAll(list);
         }
         if (tree.containsKey(id)) {
             Product existingProduct = tree.get(id);
@@ -126,22 +133,24 @@ public class MDS {
        or 0, if such an id did not exist.
     */
     public long delete(long id) {
-        Product p = tree.remove(id);
-        long sum = 0;
-        if (p != null) {
-            for (long d : p.desc) {
-                sum += d;
-                HashSet<Long> set = table.get(d);
-                if (set != null) {
-                    if (set.size() > 1) {
-                        set.remove(id);
-                    } else {
-                        table.remove(d);
+        //if(tree.containsKey(id)) {
+            Product p = tree.remove(id);
+            long sum = 0;
+            if (p != null) {
+                for (long d : p.desc) {
+                    sum += d;
+                    HashSet<Long> set = table.get(d);
+                    if (set != null) {
+                        if (set.size() > 1) {
+                            set.remove(id);
+                        } else {
+                            table.remove(d);
+                        }
                     }
                 }
+                return sum;
             }
-            return sum;
-        } else {
+        /*}*/else {
             return 0;
         }
 
@@ -231,16 +240,17 @@ public class MDS {
         long high = tree.floorKey(h);
 
         Money sum = new Money();
-        for(long i: tree.keySet()){
-            if(i <= high && i >= low) {
-                if (tree.containsKey(i)) {
-                    Product p = tree.get(i);
-                    Money temp = p.price;
-                    Money increase = MoneyIntoFloat(p.price, rate);
-                    Money update = MoneyAdder(temp, increase);
-                    sum = MoneyAdder(sum, increase);
-                    tree.put(i, new Product(update, p.desc));
-                }
+        SortedMap<Long, Product> treeSub;
+        treeSub = tree.subMap(low, true, high, true );
+        for(long i: treeSub.keySet()){
+            if (tree.containsKey(i)) {
+                Product p = tree.get(i);
+                Money temp = p.price;
+                Money increase = MoneyIntoFloat(p.price, rate);
+                Money update = MoneyAdder(temp, increase);
+                sum = MoneyAdder(sum, increase);
+                p.price = update;
+                //tree.put(i, new Product(update, p.desc));
             }
         }
         return sum;
@@ -265,7 +275,7 @@ public class MDS {
     private Money MoneyIntoFloat(Money p1, double r){
         long a = (p1.dollars() * 100) + p1.cents();
         double res = (a * (r / 100));
-        long result = (long) res;
+        long result = (long) Math.floor(res);
         return new Money(result/100, (int) (result%100));
     }
 
@@ -285,10 +295,12 @@ public class MDS {
                 sum += i;
                 p.desc.remove(i);
                 HashSet<Long> set = table.get(i);
-                if (set.size() > 1) {
-                    set.remove(id);
-                } else {
+                if (set.size() == 1) {
                     table.remove(i);
+                    //set.remove(id);
+                } else {
+                    set.remove(id);
+                    //table.remove(i);
                 }
             }
 
