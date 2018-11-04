@@ -1,3 +1,4 @@
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -6,12 +7,14 @@ import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 /**
  * Implementation of Data Structures
  * Created by Ketki Mahajan on ${Date}
  **/
+
 public class MDSTest {
-/*
+
     MDS m1 = new MDS();
     MDS m2;
 
@@ -30,17 +33,17 @@ public class MDSTest {
 
     }
 
-*/
-    @Test
+/* @Test
     void issue(){
         MDS m3 = new MDS();
         int abc = m3.insert(6856168, new MDS.Money("7.12"), Arrays.asList(15105L, 55214L, 73815L, 99875L, 63553L, 97477L, 34588L, 27152L, 85662L, 75221L, 20533L, 35109L, 102887L, 38748L, 40263L, 39499L, 26355L, 46181L, 67621L, 38518L, 63642L, 93574L, 66676L, 49940L, 76854L, 100069L, 52184L, 60730L, 12949L, 46598L, 105833L, 27152L, 63746L, 10360L, 15077L, 26494L, 70285L, 97622L, 84461L, 36741L, 48180L, 12565L, 58189L, 54672L, 50482L, 63037L, 12880L, 61926L, 26782L, 52961L, 61287L, 96324L, 43994L, 52086L, 107360L, 109861L, 38486L, 85287L, 52464L, 86007L, 101549L, 20395L, 92794L, 31224L, 54792L, 102005L, 88680L, 42671L, 105132L, 36833L, 88352L, 46186L, 106547L, 43075L, 20682L, 63864L, 89279L, 50214L, 66676L, 100471L, 37222L, 17670L, 77020L, 17504L, 34302L, 27164L, 19578L, 31473L, 24451L, 89371L, 79026L, 48918L, 41998L, 90390L, 41492L, 71621L, 101519L));
         assertEquals(1, abc);
         long res = m3.delete(6856168);
         assertEquals(5527505, res);
-    }
+    }*//*
 
-/*
+
+*/
     @Test
     void insert() {
 
@@ -191,6 +194,7 @@ public class MDSTest {
         assertEquals(new MDS.Money(52, 34).toString(), ph.priceHike(4, 8, 5.00).toString());
 
     }
-*/
+
+
 
 }
