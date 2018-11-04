@@ -22,41 +22,6 @@ public class MDS {
         tree = new TreeMap<>();
     }
 
-    //Inner Class
-    static class Product{
-        long id;
-        Money price;
-        List<Long> desc;
-
-        public Product(Money price, java.util.List<Long> list) {
-            this.price = price;
-            this.desc = list;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Product product = (Product) o;
-
-            return id == product.id;
-        }
-
-        @Override
-        public int hashCode() {
-            return (int) (id ^ (id >>> 32));
-        }
-    }
-
-
-
-
-   /* public static void main(String[] args) {
-        mockProducts();
-        System.out.println(findPrice);
-    }*/
-
     /* Public methods of MDS. Do not change their signatures.
        __________________________________________________________________
        a. Insert(id,price,list): insert a new item whose description is given
@@ -66,32 +31,23 @@ public class MDS {
        Returns 1 if the item is new, and 0 otherwise.
     */
     public int insert(long id, Money price, java.util.List<Long> list) {
-        List<Long> desc = new LinkedList<>();
-        desc.clear();
-        if (list != null) {
-            for (long listElement : list) {
-                if(!desc.contains(listElement))
-                {
-                    desc.add(listElement);
-                }
-            }
-
-            //desc.addAll(list);
-        }
+        Set<Long> desc = new HashSet<>();
+        desc.addAll(list);
         if (tree.containsKey(id)) {
             Product existingProduct = tree.get(id);
             delete(id);
             if (list == null || list.isEmpty()) {
-                insert(id, price, existingProduct.desc);
+                insert(id, price, new ArrayList<>(existingProduct.desc));
             } else {
-                insert(id, price, desc);
+                insert(id, price, new ArrayList<>(desc));
             }
             return 0;
         } else {
             Product newProduct = new Product(price, desc);
             tree.put(id, newProduct);
+            HashSet<Long> set;
             for (long d : desc) {
-                HashSet<Long> set = table.get(d);
+                set = table.get(d);
                 if (set == null) {
                     set = new HashSet<>();
                     set.add(id);
@@ -105,11 +61,40 @@ public class MDS {
         }
 
     }
+
+    /*
+       c. Delete(id): delete item from storage.
+       Returns the sum of the long ints that are in the description of the item deleted,
+       or 0, if such an id did not exist.
+    */
+    public long delete(long id) {
+            Product p = tree.remove(id);
+            long sum = 0;
+        HashSet<Long> set;
+        if (p != null) {
+                for (long d : p.desc) {
+                    sum += d;
+                    set = table.get(d);
+                    if (set != null) {
+                        if (set.size() > 1) {
+                            set.remove(id);
+                        } else {
+                            table.remove(d);
+                        }
+                    }
+                }
+                return sum;
+            } else {
+            return 0;
+        }
+
+    }
+
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
-        if(tree.containsKey(id)){
+        if (tree.containsKey(id)) {
             return tree.get(id).price;
-        }else{
+        } else {
             return new Money();
         }
     }
@@ -126,34 +111,31 @@ public class MDS {
         return tree.get(id);
     }
 
-
     /*
-       c. Delete(id): delete item from storage.
-       Returns the sum of the long ints that are in the description of the item deleted,
-       or 0, if such an id did not exist.
+       f. FindPriceRange(n,low,high): given a long int n, find the number
+       of items whose description contains n, and in addition,
+       their prices fall within the given range, [low, high].
     */
-    public long delete(long id) {
-        //if(tree.containsKey(id)) {
-            Product p = tree.remove(id);
-            long sum = 0;
-            if (p != null) {
-                for (long d : p.desc) {
-                    sum += d;
-                    HashSet<Long> set = table.get(d);
-                    if (set != null) {
-                        if (set.size() > 1) {
-                            set.remove(id);
-                        } else {
-                            table.remove(d);
-                        }
-                    }
-                }
-                return sum;
-            }
-        /*}*/else {
+    public int findPriceRange(long n, Money low, Money high) {
+
+        if (low.compareTo(high) > 0) {
             return 0;
         }
 
+        if (table.containsKey(n)) {
+            HashSet<Long> range = table.get(n);
+            int count = 0;
+            Money temp;
+            for (long id : range) {
+                temp = find(id);
+                if (temp.compareTo(low) >= 0 && temp.compareTo(high) <= 0) {
+                    count++;
+                }
+            }
+            return count;
+        } else {
+            return 0;
+        }
     }
 
     /*
@@ -204,35 +186,6 @@ public class MDS {
     }
 
     /*
-       f. FindPriceRange(n,low,high): given a long int n, find the number
-       of items whose description contains n, and in addition,
-       their prices fall within the given range, [low, high].
-    */
-    public int findPriceRange(long n, Money low, Money high) {
-
-        if(low.compareTo(high) > 0)
-        {
-            return 0;
-        }
-
-        if(table.containsKey(n)){
-            HashSet<Long> range = table.get(n);
-            int count = 0;
-            Money temp;
-            for(Long id: range){
-                temp = find(id);
-                if(temp.compareTo(low) >= 0 && temp.compareTo(high) <= 0){
-                    count++;
-                }
-            }
-            return count;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    /*
        g. PriceHike(l,h,r): increase the price of every product, whose id is
        in the range [l,h] by r%.  Discard any fractional pennies in the new
        prices of items.  Returns the sum of the net increases of the prices.
@@ -246,43 +199,21 @@ public class MDS {
         long high = tree.floorKey(h);
 
         Money sum = new Money();
+        Product p;
+        Money temp, increase, update;
         SortedMap<Long, Product> treeSub;
         treeSub = tree.subMap(low, true, high, true );
         for(long i: treeSub.keySet()){
             if (tree.containsKey(i)) {
-                Product p = tree.get(i);
-                Money temp = p.price;
-                Money increase = MoneyIntoFloat(p.price, rate);
-                Money update = MoneyAdder(temp, increase);
+                p = tree.get(i);
+                temp = p.price;
+                increase = MoneyIntoFloat(p.price, rate);
+                update = MoneyAdder(temp, increase);
                 sum = MoneyAdder(sum, increase);
                 p.price = update;
-                //tree.put(i, new Product(update, p.desc));
             }
         }
         return sum;
-    }
-
-    /*
-     * Used internally to add 2 Money prices.
-     *
-     * */
-    private Money MoneyAdder(Money p1, Money p2){
-        long a = (p1.dollars() * 100) + p1.cents();
-        long b = (p2.dollars() * 100) + p2.cents();
-        long res = a + b;
-        return new Money(res/100, (int) (res%100));
-    }
-
-
-    /*
-     * Used internally to multiply the value of Money and
-     * rate to find what needs to be added to make updates in priceHike
-     * */
-    private Money MoneyIntoFloat(Money p1, double r){
-        long a = (p1.dollars() * 100) + p1.cents();
-        double res = (a * (r / 100));
-        long result = (long) Math.floor(res);
-        return new Money(result/100, (int) (result%100));
     }
 
     /*
@@ -294,25 +225,77 @@ public class MDS {
     public long removeNames(long id, java.util.List<Long> list) {
         Product p = tree.get(id);
         long sum = 0;
-
+        HashSet<Long> set;
         if(p != null) {
             for (long i : list) {
                 if (p.desc.contains(i)) {
                     sum += i;
                     p.desc.remove(i);
-                    HashSet<Long> set = table.get(i);
+                    set = table.get(i);
                     if (set.size() == 1) {
                         table.remove(i);
-                        //set.remove(id);
                     } else {
                         set.remove(id);
-                        //table.remove(i);
                     }
                 }
 
             }
         }
         return sum;
+    }
+
+    /*
+     * Used internally to add 2 Money prices.
+     *
+     * */
+    private Money MoneyAdder(Money p1, Money p2) {
+        long a = (p1.dollars() * 100) + p1.cents();
+        long b = (p2.dollars() * 100) + p2.cents();
+        long res = a + b;
+        return new Money(res / 100, (int) (res % 100));
+    }
+
+
+    /*
+     * Used internally to multiply the value of Money and
+     * rate to find what needs to be added to make updates in priceHike
+     * */
+    private Money MoneyIntoFloat(Money p1, double r) {
+        long a = (p1.dollars() * 100) + p1.cents();
+        double res = (a * (r / 100));
+        long result = (long) Math.floor(res);
+        return new Money(result / 100, (int) (result % 100));
+    }
+
+    //Inner Class
+    static class Product {
+        //long id;
+        Money price;
+        //List<Long> desc;
+        Set<Long> desc;
+
+        public Product(Money price, Set<Long> desc) {
+            this.price = price;
+            this.desc = desc;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Product product = (Product) o;
+
+            if (price != null ? !price.equals(product.price) : product.price != null) return false;
+            return desc != null ? desc.equals(product.desc) : product.desc == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = price != null ? price.hashCode() : 0;
+            result = 31 * result + (desc != null ? desc.hashCode() : 0);
+            return result;
+        }
     }
 
     // Do not modify the Money class in a way that breaks LP3Driver.java
