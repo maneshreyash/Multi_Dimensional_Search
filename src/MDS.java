@@ -209,6 +209,12 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
+
+        if(low.compareTo(high) > 0)
+        {
+            return 0;
+        }
+
         if(table.containsKey(n)){
             HashSet<Long> range = table.get(n);
             int count = 0;
@@ -289,21 +295,22 @@ public class MDS {
         Product p = tree.get(id);
         long sum = 0;
 
-
-        for (long i : list) {
-            if (p.desc.contains(i)) {
-                sum += i;
-                p.desc.remove(i);
-                HashSet<Long> set = table.get(i);
-                if (set.size() == 1) {
-                    table.remove(i);
-                    //set.remove(id);
-                } else {
-                    set.remove(id);
-                    //table.remove(i);
+        if(p != null) {
+            for (long i : list) {
+                if (p.desc.contains(i)) {
+                    sum += i;
+                    p.desc.remove(i);
+                    HashSet<Long> set = table.get(i);
+                    if (set.size() == 1) {
+                        table.remove(i);
+                        //set.remove(id);
+                    } else {
+                        set.remove(id);
+                        //table.remove(i);
+                    }
                 }
-            }
 
+            }
         }
         return sum;
     }
