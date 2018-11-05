@@ -1,18 +1,16 @@
 import java.util.*;
 
 /**
- * Starter code for LP3
+ * Implementation of MultiDimensional Search by using the help of 2 data structures i.e TreeMap and HashMap
+ * and simultaineously updating both the data structures for each operation.
  *
- * @author
+ * @author Shreyash Mane, Ketki Mahajan, Ameya Kasar, Sunny Bangale
  */
 
-
-// If you want to create additional classes, place them in this file as subclasses of MDS
-
 public class MDS {
-    // Add fields of MDS here
-
+    //A HashMap that has the description as it key and a HashSet of product ID's as its values
     HashMap<Long, HashSet<Long>> table;
+    //A TreeMap that has the id as its key and the corresponding Product of that id as its value
     TreeMap<Long, Product> tree;
 
 
@@ -22,9 +20,8 @@ public class MDS {
         tree = new TreeMap<>();
     }
 
-    /* Public methods of MDS. Do not change their signatures.
-       __________________________________________________________________
-       a. Insert(id,price,list): insert a new item whose description is given
+    /*
+       Insert(id,price,list): inserts a new item whose description is given
        in the list.  If an entry with the same id already exists, then its
        description and price are replaced by the new values, unless list
        is null or empty, in which case, just the price is updated.
@@ -63,7 +60,7 @@ public class MDS {
     }
 
     /*
-       c. Delete(id): delete item from storage.
+       Delete(id): delete item from storage.
        Returns the sum of the long ints that are in the description of the item deleted,
        or 0, if such an id did not exist.
     */
@@ -90,7 +87,7 @@ public class MDS {
 
     }
 
-    // b. Find(id): return price of item with given id (or 0, if not found).
+    //  Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
         if (tree.containsKey(id)) {
             return tree.get(id).price;
@@ -112,7 +109,7 @@ public class MDS {
     }
 
     /*
-       f. FindPriceRange(n,low,high): given a long int n, find the number
+       FindPriceRange(n,low,high): given a long int n, find the number
        of items whose description contains n, and in addition,
        their prices fall within the given range, [low, high].
     */
@@ -139,7 +136,7 @@ public class MDS {
     }
 
     /*
-       d. FindMinPrice(n): given a long int, find items whose description
+       FindMinPrice(n): given a long int, find items whose description
        contains that number (exact match with one of the long ints in the
        item's description), and return lowest price of those items.
        Return 0 if there is no such item.
@@ -162,7 +159,7 @@ public class MDS {
     }
 
 
-       /*e. FindMaxPrice(n): given a long int, find items whose description
+       /*FindMaxPrice(n): given a long int, find items whose description
        contains that number, and return highest price of those items.
        Return 0 if there is no such item.*/
 
@@ -186,7 +183,7 @@ public class MDS {
     }
 
     /*
-       g. PriceHike(l,h,r): increase the price of every product, whose id is
+       PriceHike(l,h,r): increase the price of every product, whose id is
        in the range [l,h] by r%.  Discard any fractional pennies in the new
        prices of items.  Returns the sum of the net increases of the prices.
     */
@@ -217,7 +214,7 @@ public class MDS {
     }
 
     /*
-      h. RemoveNames(id, list): Remove elements of list from the description of id.
+      RemoveNames(id, list): Remove elements of list from the description of id.
       It is possible that some of the items in the list are not in the id's description.
       Return the sum of the numbers that are actually deleted from the description of id.
       Return 0 if there is no such id.
@@ -267,7 +264,7 @@ public class MDS {
         return new Money(result / 100, (int) (result % 100));
     }
 
-    //Inner Class
+    //Inner Entry Class
     static class Product {
         //long id;
         Money price;
@@ -298,7 +295,6 @@ public class MDS {
         }
     }
 
-    // Do not modify the Money class in a way that breaks LP3Driver.java
     public static class Money implements Comparable<Money> {
         long d;
         int c;
